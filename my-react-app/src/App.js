@@ -11,121 +11,256 @@ import { useParams } from 'react-router-dom';
 import BooksCom from './components/BooksCom';
 import { Link } from 'react-router-dom';
 import Home from './components/Home';
+import ErrorPage from './components/ErrorPage';
+import Layout from './components/Layout';
+import { Outlet, useLocation } from 'react-router-dom';
 
 
+// function App() {
+ 
+// //לפני השרת שלחתי פה את המערך נתונים שייבאתי מקבץ עכשו זה לפי השרת השרת מייבא אליו ושאני שולחת בקשת API זה קורה אוטומטית
+// const [books, setBooks] = useState([]);
+
+//   // const handleAddBook = (newBook) => {
+//   //   setBooks([...books, newBook]); // מוסיף ספר חדש לסוף
+//   // };
+
+  
+//  useEffect(() => {
+//  (async function() {
+//  const res = await fetch('http://localhost:3000/api/books');
+//  const data = await res.json();
+//  setBooks(data);
+//  })()}, [] )
+
+
+//   //מחיקת ספר ע"פ השם שלו
+// const removeBookByTitle =   (titleToRemove) => {
+//   setBooks(books.filter(book => book.title !== titleToRemove));
+// };
+
+// const  handleRate =async (title, newRating) => {
+
+//   setBooks(prevBooks =>
+//     prevBooks.map(book =>
+//       book.title === title
+//         ? {
+//             ...book,
+//             ratingSum: (book.ratingSum || 0) + newRating,
+//             ratingCount: (book.ratingCount || 0) + 1
+//           }
+//         : book
+//     )
+//   );
+
+//    // מצא את הספר שצריך לעדכן
+//   const bookToUpdate = books.find(book => book.title === title);
+//   if (!bookToUpdate) return;
+
+//   // צור גרסה חדשה שלו עם הדירוג החדש
+//   const updatedBook = {
+//     ...bookToUpdate,
+//     ratingSum: (bookToUpdate.ratingSum || 0) + newRating,
+//     ratingCount: (bookToUpdate.ratingCount || 0) + 1
+//   };
+
+//   try {
+//     await fetch(`http://localhost:3000/api/books/${encodeURIComponent(title)}`, {
+//       method: 'PUT',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(updatedBook),
+//     });
+//   } catch (error) {
+//     console.error('שגיאה בשליחת PUT לשרת:', error);
+//   }
+// };
+
+
+//   return (<>
+//   <Routes>
+//     <Route path = "/" element = {<Home />} />
+//     {/* <Route path = "Books" element = {<BooksCom books={books}  onRate={handleRate} onRemove={removeBookByTitle}/>} /> */}
+//     <Route path = "Books" element = {<BooksCom books={books}  onRate={handleRate} onRemove={removeBookByTitle} />} />
+//     <Route path = "newBook" element = {<AddBook setBooks={setBooks}/>} />
+//     <Route path = "TheBests" element = {<TopRatedBooks books={books} />} />
+//     <Route path="/books/:title" element={
+//   <BookWrapper books={books} onRate={handleRate} onRemove={removeBookByTitle} />} />
+//       <Route path="*" element={<ErrorPage />} />
+//   </Routes>
+
+//  <nav>
+//   <ul>
+//     <li><Link to="/">Home</Link></li>
+//     <li><Link to="/Books">Book</Link></li>
+//     <li><Link to="/newBook">Create Book</Link></li> 
+//     <li><Link to="/TheBests">The Bests</Link></li> 
+//   </ul>
+//  </nav>
+//   {/* זה תצוגה בלי ניתובים של פרטים הוספת ספר ורשימת הספרים. */}
+//   {/* <TopRatedBooks books={books} />
+
+//        {/* קומפוננטת הוספת ספר */}
+//   {/* <AddBook setBooks={setBooks} /> */}
+
+//   {/* <MyDetails></MyDetails> */}
+//   {/* <Book title ="Daddy Gamadi" author = "Menucha" year ={2000} des = "A book to child" price = {20} sale={50} stock = {1}>  </Book> */}
+//     {/* <div> */}
+//       {/* {books.map((book, index) => (
+//         <Book
+//           key={index}
+//           title={book.title}
+//           author={book.author}
+//           year={book.year}
+//           des={book.des}
+//           price={book.price}
+//           sale={book.sale}
+//           stock={book.stock}
+//               ratingSum={book.ratingSum}
+//     ratingCount={book.ratingCount}
+
+//     onRate={handleRate}
+//            onRemove={removeBookByTitle} // שולח את הפונקציה למחיקה לפרופס
+//         />
+//       ))} */}
+//     {/* </div> */} 
+//       </>
+//   );
+// }
+// function BookWrapper({ books, onRate, onRemove }) {
+//   const { title } = useParams();
+//   const book = books.find(b => b.title === decodeURIComponent(title));
+
+//   if (!book) return <div>לא נמצא ספר בשם: {title}</div>;
+
+//   return <Book {...book} onRate={onRate} onRemove={onRemove} />;
+// }
+
+// export default App;
 
 function App() {
- 
-//לפני השרת שלחתי פה את המערך נתונים שייבאתי מקבץ עכשו זה לפי השרת השרת מייבא אליו ושאני שולחת בקשת API זה קורה אוטומטית
-const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState([]);
 
-  // const handleAddBook = (newBook) => {
-  //   setBooks([...books, newBook]); // מוסיף ספר חדש לסוף
-  // };
+  useEffect(() => {
+    (async function () {
+      const res = await fetch('http://localhost:3000/api/books');
+      const data = await res.json();
+      setBooks(data);
+    })();
+  }, []);
 
- useEffect(() => {
- (async function() {
-
- const res = await fetch('http://localhost:3000/api/books');
- const data = await res.json();
- setBooks(data);
- })()}, [] )
-
-
-  //מחיקת ספר ע"פ השם שלו
-const removeBookByTitle =   (titleToRemove) => {
-  setBooks(books.filter(book => book.title !== titleToRemove));
-};
-
-const  handleRate =async (title, newRating) => {
-
-  setBooks(prevBooks =>
-    prevBooks.map(book =>
-      book.title === title
-        ? {
-            ...book,
-            ratingSum: (book.ratingSum || 0) + newRating,
-            ratingCount: (book.ratingCount || 0) + 1
-          }
-        : book
-    )
-  );
-
-
-
-   // מצא את הספר שצריך לעדכן
-  const bookToUpdate = books.find(book => book.title === title);
-  if (!bookToUpdate) return;
-
-  // צור גרסה חדשה שלו עם הדירוג החדש
-  const updatedBook = {
-    ...bookToUpdate,
-    ratingSum: (bookToUpdate.ratingSum || 0) + newRating,
-    ratingCount: (bookToUpdate.ratingCount || 0) + 1
+  const removeBookByTitle = (titleToRemove) => {
+    setBooks(books.filter(book => book.title !== titleToRemove));
   };
 
-  try {
-    await fetch(`http://localhost:3000/api/books/${encodeURIComponent(title)}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedBook),
-    });
-  } catch (error) {
-    console.error('שגיאה בשליחת PUT לשרת:', error);
-  }
-};
+  const handleRate = async (title, newRating) => {
+    setBooks(prevBooks =>
+      prevBooks.map(book =>
+        book.title === title
+          ? {
+              ...book,
+              ratingSum: (book.ratingSum || 0) + newRating,
+              ratingCount: (book.ratingCount || 0) + 1,
+            }
+          : book
+      )
+    );
 
-  return (<>
+    const bookToUpdate = books.find(book => book.title === title);
+    if (!bookToUpdate) return;
+
+    const updatedBook = {
+      ...bookToUpdate,
+      ratingSum: (bookToUpdate.ratingSum || 0) + newRating,
+      ratingCount: (bookToUpdate.ratingCount || 0) + 1,
+    };
+
+    try {
+      await fetch(`http://localhost:3000/api/books/${encodeURIComponent(title)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedBook),
+      });
+    } catch (error) {
+      console.error('שגיאה בשליחת PUT לשרת:', error);
+    }
+  };
+
+return (
+  
+
+     
   <Routes>
-    <Route path = "/" element = {<Home />} />
-    {/* <Route path = "Books" element = {<BooksCom books={books}  onRate={handleRate} onRemove={removeBookByTitle}/>} /> */}
-    <Route path = "Books" element = {<BooksCom books={books}  onRate={handleRate} onRemove={removeBookByTitle} />} />
-    <Route path = "newBook" element = {<AddBook setBooks={setBooks}/>} />
-    <Route path = "TheBests" element = {<TopRatedBooks books={books} />} />
-    <Route path="/books/:title" element={
-  <BookWrapper books={books} onRate={handleRate} onRemove={removeBookByTitle} />
-} />
-
-  </Routes>
-
- <nav>
-  <ul>
-    <li><Link to="/">Home</Link></li>
-    <li><Link to="/Books">Book</Link></li>
-    <li><Link to="/newBook">Create Book</Link></li> 
-    <li><Link to="/TheBests">The Bests</Link></li> 
-  </ul>
- </nav>
-  {/* זה תצוגה בלי ניתובים של פרטים הוספת ספר ורשימת הספרים. */}
-  {/* <TopRatedBooks books={books} />
-
-       {/* קומפוננטת הוספת ספר */}
-  {/* <AddBook setBooks={setBooks} /> */}
-
-  {/* <MyDetails></MyDetails> */}
-  {/* <Book title ="Daddy Gamadi" author = "Menucha" year ={2000} des = "A book to child" price = {20} sale={50} stock = {1}>  </Book> */}
-    {/* <div> */}
-      {/* {books.map((book, index) => (
-        <Book
-          key={index}
-          title={book.title}
-          author={book.author}
-          year={book.year}
-          des={book.des}
-          price={book.price}
-          sale={book.sale}
-          stock={book.stock}
-              ratingSum={book.ratingSum}
-    ratingCount={book.ratingCount}
-
-    onRate={handleRate}
-           onRemove={removeBookByTitle} // שולח את הפונקציה למחיקה לפרופס
+        <Route path="/" element={<Home />} />
+     <Route path="*" element={<ErrorPage />} />
+    <Route
+      path="/"
+      element={
+        <Layout
+          books={books}
+          onRate={handleRate}
+          onRemove={removeBookByTitle}
         />
-      ))} */}
-    {/* </div> */} 
-      </>
-  );
+      }
+    >
+  <Route index element={<Home />} />
+
+
+      {/* ✅ תצוגת כל הספרים */}
+      <Route
+        path="Books"
+        element={
+          <BooksCom
+            books={books}
+            onRate={handleRate}
+            onRemove={removeBookByTitle}
+          />
+        }
+      />
+<Route
+  path="books/:title"
+  element={
+    <>
+      <BooksCom
+        books={books}
+        onRate={handleRate}
+        onRemove={removeBookByTitle}
+      />
+      <BookWrapper
+        books={books}
+        onRate={handleRate}
+        onRemove={removeBookByTitle}
+      />
+    </>
+  }
+/>
+
+      {/* יצירת ספר חדש */}
+      <Route path="newBook" element={<AddBook setBooks={setBooks} />} />
+
+      {/* רשימת ספרים מדורגים */}
+      <Route
+        path="TheBests"
+        element={<TopRatedBooks books={books} />}
+      />
+
+      {/* תצוגה פרטנית של ספר לפי כותרת */}
+      <Route
+        path="books/:title"
+        element={
+          <BookWrapper
+            books={books}
+            onRate={handleRate}
+            onRemove={removeBookByTitle}
+          />
+        }
+      />
+
+    </Route>
+  </Routes>
+);
+
 }
+
 function BookWrapper({ books, onRate, onRemove }) {
   const { title } = useParams();
   const book = books.find(b => b.title === decodeURIComponent(title));

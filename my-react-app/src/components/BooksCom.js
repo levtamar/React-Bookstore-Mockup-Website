@@ -1,6 +1,7 @@
 import Book from "./Book";
 import { Link } from "react-router-dom";
 function BooksCom(props) {
+  console.log("bvhfj");
   return (
     // <ul>
     //   {props.books.map((s, ind) => (

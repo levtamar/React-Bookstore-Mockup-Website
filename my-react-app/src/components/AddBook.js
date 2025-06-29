@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './AddBook.css';
 import { useEffect } from 'react';
+import BooksCom from './BooksCom';
+import { useNavigate } from 'react-router-dom';
 function AddBook(props) {
   const [title1, setTitle1] = useState('');
   const [author1, setAuthor1] = useState('');
@@ -28,17 +30,26 @@ function AddBook(props) {
   // };
  const [newBook, setNewBook] = useState(null);
 
- async function postData() {
-  console.log("fdgfh");
- const res = await fetch('http://localhost:3000/api/books', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(newBook)
- });
- const data = await res.json();
- props.setBooks(prevBooks => [...prevBooks, data]);
- if (data.code > 0) props.setBooks(prevBooks => prevBooks.concat(data));
- }
+
+  const navigate = useNavigate(); // ✅ ברמה העליונה
+
+  async function postData() {
+    console.log("fdgfh");
+    const res = await fetch('http://localhost:3000/api/books', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newBook),
+    });
+    const data = await res.json();
+
+    props.setBooks(prevBooks => [...prevBooks, data]);
+
+    if (data.code > 0) {
+      props.setBooks(prevBooks => prevBooks.concat(data));
+    }
+
+    navigate('/Books'); // ✅ בשימוש תקין
+  }
 useEffect(() =>{
  //the if is required for the first render, useEffectis always called then
  if (newBook== null) return;
@@ -46,6 +57,7 @@ useEffect(() =>{
 }, [newBook])
   return (
     <> 
+    
      <div className="add-book-container">
        <span>שם</span>
       <input value={title1} onChange={(e) => setTitle1(e.target.value)} /><br />
@@ -101,10 +113,8 @@ useEffect(() =>{
   הוסף
 </button>
 
-
       </div>
     </>
   );
-}
-
+ }
 export default AddBook;

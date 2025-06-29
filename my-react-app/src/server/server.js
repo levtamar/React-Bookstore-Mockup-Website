@@ -29,6 +29,13 @@ app.delete('/api/books/:title', (req, res) => {
   books.splice(index, 1);
   res.status(200).json({ message: 'Book deleted' });
 });
+app.get('/api/books/:title', (req, res) => {
+  console.log("הגעתי לבצגת ספר סםר")
+  const title = req.params.title;
+  const book = books.find(b => b.title === title);
+  if (!book) return res.status(404).json({ error: 'Book not found' });
+  res.json(book);
+});
 
 // app.delete('/api/books/:title', (req, res) => {
 //   console.log("הגעתי למחיקה");
